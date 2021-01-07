@@ -1,5 +1,7 @@
 package test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -24,7 +26,8 @@ public class Arch2Metrics {
 
     @Test
     public void testACD() {
-        System.out.println(String.format("%f",metrics.getAverageComponentDependency()));
-    }
+        double acd = metrics.getAverageComponentDependency();
+        assertEquals(12.0 / 5.0, acd, 0.01);
+   }
 	
 }
