@@ -29,5 +29,36 @@ public class Arch1Metrics {
         double acd = metrics.getAverageComponentDependency();
         assertEquals(15.0 / 5.0, acd, 0.01);
     }
+    
+    @Test
+    public void testCCD() {
+    	int ccd = metrics.getCumulativeComponentDependency();
+    	assertEquals(15,ccd);
+    }
+    
+    @Test
+    public void testDependsUpon() {
+    	assertEquals(5,metrics.getDependsUpon("test.arch1.C1"));
+    	assertEquals(3,metrics.getDependsUpon("test.arch1.C2"));
+    	assertEquals(2,metrics.getDependsUpon("test.arch1.C3"));
+    	assertEquals(3,metrics.getDependsUpon("test.arch1.C4"));
+    	assertEquals(2,metrics.getDependsUpon("test.arch1.C5"));
+    	assertEquals(5,metrics.getDependsUpon(metrics.getMaximumDependsUpon()));
+    }
+	
+    @Test
+    public void testUsedFrom() {
+    	assertEquals(1,metrics.getUsedFrom("test.arch1.C1"));
+    	assertEquals(2,metrics.getUsedFrom("test.arch1.C2"));
+    	assertEquals(5,metrics.getUsedFrom("test.arch1.C3"));
+    	assertEquals(2,metrics.getUsedFrom("test.arch1.C4"));
+    	assertEquals(5,metrics.getUsedFrom("test.arch1.C5"));
+    	assertEquals(5,metrics.getUsedFrom(metrics.getMaximumUsedFrom()));
+    }
+    
+    @Test
+    public void testNCCD() {
+    	assertEquals(15.0 / 11.0, metrics.getNormalizedCumulativeComponentDependency(), 0.01);
+    }
 	
 }

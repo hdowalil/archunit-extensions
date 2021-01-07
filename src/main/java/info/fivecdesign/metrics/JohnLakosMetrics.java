@@ -160,7 +160,7 @@ public class JohnLakosMetrics {
     public double getNormalizedCumulativeComponentDependency () {
 
         double ccd = (double) getCumulativeComponentDependency();
-        double ccd_BinaryTree = (double) getCCDForBalancedBinaryTreeWithNoOfComponents(usedFrom.size());
+        double ccd_BinaryTree = (double) getCCDForBalancedBinaryTreeWithNoOfComponents(dependsUpon.size());
 
         return ccd / ccd_BinaryTree;
     }
