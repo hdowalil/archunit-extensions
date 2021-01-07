@@ -137,11 +137,11 @@ public class JohnLakosMetrics {
 
     public int getCumulativeComponentDependency() {
 
-        if (usedFrom == null) {
+        if (dependsUpon == null) {
             calculateAllDependsUpon();
         }
 
-        return usedFrom.values().stream().reduce(0, Integer::sum);
+        return dependsUpon.values().stream().reduce(0, Integer::sum);
 
     }
 
