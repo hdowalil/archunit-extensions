@@ -10,6 +10,7 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 
 import info.fivecdesign.metrics.JohnLakosMetrics;
+import info.fivecdesign.metrics.RelativeCyclicity;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class Arch2Metrics {
@@ -17,11 +18,13 @@ public class Arch2Metrics {
 	private static final String PACKAGE_ROOT = "test.arch2";
     private JavaClasses classes = null;
     private JohnLakosMetrics metrics = null;
+    private RelativeCyclicity cyclicity;
 
     @BeforeAll
     public void importClasses() {
         classes = new ClassFileImporter().importPackages(PACKAGE_ROOT);
         metrics = new JohnLakosMetrics(classes);
+        cyclicity = new RelativeCyclicity(classes);
     }
 
     @Test
@@ -59,6 +62,11 @@ public class Arch2Metrics {
     @Test
     public void testNCCD() {
     	assertEquals(12.0 / 11.0, metrics.getNormalizedCumulativeComponentDependency(), 0.01);
+    }
+	
+    @Test
+    public void testRelativeCyclicity() {
+    	assertEquals(0.0, cyclicity.calculateRelativeCyclicity(), 0.01);
     }
 	
 }
