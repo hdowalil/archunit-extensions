@@ -9,7 +9,7 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 
 /**
  * 
- * TODO: relative cyclicity of classes and packages
+ * relative cyclicity of classes
  *
  */
 public class RelativeCyclicity {

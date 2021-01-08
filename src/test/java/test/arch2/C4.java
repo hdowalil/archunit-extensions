@@ -1,6 +1,6 @@
 package test.arch2;
 
-public class C4 {
+class C4 {
 
 	public void doSthg() {
 		
