@@ -11,6 +11,7 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 
 import info.fivecdesign.metrics.JohnLakosMetrics;
 import info.fivecdesign.metrics.RelativeCyclicity;
+import info.fivecdesign.metrics.VisibilityMetrics;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class Arch1Metrics {
@@ -19,12 +20,14 @@ public class Arch1Metrics {
     private JavaClasses classes = null;
     private JohnLakosMetrics metrics = null;
     private RelativeCyclicity cyclicity;
+    private VisibilityMetrics visibility;
 
     @BeforeAll
     public void importClasses() {
         classes = new ClassFileImporter().importPackages(PACKAGE_ROOT);
         metrics = new JohnLakosMetrics(classes);
         cyclicity = new RelativeCyclicity(classes);
+        visibility = new VisibilityMetrics(classes);
     }
 
     @Test
@@ -67,6 +70,16 @@ public class Arch1Metrics {
     @Test
     public void testRelativeCyclicity() {
     	assertEquals(40.0, cyclicity.calculateRelativeCyclicity(), 0.01);
+    }
+	
+    @Test
+    public void testClassVisibility() {
+    	assertEquals(100.0, visibility.calculateGlobalRelativeVisibilityOfClassesInPackages(), 0.01);
+    }
+	
+    @Test
+    public void testMemberVisibility() {
+    	assertEquals(100.0, visibility.calculateGlobalRelativeVisibilityOfClassMembers(), 0.01);
     }
 	
 }
