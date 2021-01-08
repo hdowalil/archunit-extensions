@@ -3,6 +3,7 @@ package info.fivecdesign.metrics;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tngtech.archunit.core.domain.Dependency;
 import com.tngtech.archunit.core.domain.JavaAccess;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
@@ -11,9 +12,9 @@ import com.tngtech.archunit.core.domain.JavaMember;
 
 /**
  *
- * TODO: Lack of Cohesion in given Classes, will return number of distinct subsets
- * See: https://github.com/cleuton/jqana 
- * https://stackoverflow.com/questions/44040918/determining-the-lcom4-lack-of-cohesion-in-methods-by-parsing-the-java-bytecode
+ * Lack of Cohesion in given Classes, will return number of distinct subsets
+ * plus lack of cohesion in whole set 
+ * 
  */
 public class LackOfCohesion {
 	
@@ -60,7 +61,23 @@ public class LackOfCohesion {
 
 		return groups.numberOfDistinctGroups();
 	}
-	
+
+	public int calculateLackOfCohesion () {
+		
+		DistinctGroups groups = new DistinctGroups();
+		
+		for (JavaClass clazz : classes) {
+			groups.add(clazz);
+			
+			for (Dependency classDependency : clazz.getDirectDependenciesToSelf()) {
+
+				JavaClass accessingClass = classDependency.getOriginClass();
+				groups.connect(clazz, accessingClass);
+			}
+		}
+		
+		return groups.numberOfDistinctGroups();
+	}
 }
 
 

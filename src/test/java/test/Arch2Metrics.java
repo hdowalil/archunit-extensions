@@ -2,6 +2,8 @@ package test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -87,6 +89,16 @@ public class Arch2Metrics {
     
     @Test
     public void testLCOM4() {
-    	System.out.println(cohesion.calculateAllLCOM4Values().toString());
+    	Map<String, Integer> lcom4Values = cohesion.calculateAllLCOM4Values();
+    	assertEquals(1, lcom4Values.get("test.arch2.C1").intValue());
+    	assertEquals(1, lcom4Values.get("test.arch2.C2").intValue());
+    	assertEquals(1, lcom4Values.get("test.arch2.C3").intValue());
+    	assertEquals(2, lcom4Values.get("test.arch2.C4").intValue());
+    	assertEquals(1, lcom4Values.get("test.arch2.C5").intValue());
+    }
+    
+    @Test
+    public void testLackOfCohesion() {
+    	assertEquals(1, cohesion.calculateLackOfCohesion());
     }
 }
