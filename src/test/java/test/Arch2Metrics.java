@@ -10,6 +10,7 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 
 import info.fivecdesign.metrics.JohnLakosMetrics;
+import info.fivecdesign.metrics.LackOfCohesion;
 import info.fivecdesign.metrics.RelativeCyclicity;
 import info.fivecdesign.metrics.VisibilityMetrics;
 
@@ -21,6 +22,7 @@ public class Arch2Metrics {
     private JohnLakosMetrics metrics = null;
     private RelativeCyclicity cyclicity;
     private VisibilityMetrics visibility;
+    private LackOfCohesion cohesion;
 
     @BeforeAll
     public void importClasses() {
@@ -28,6 +30,7 @@ public class Arch2Metrics {
         metrics = new JohnLakosMetrics(classes);
         cyclicity = new RelativeCyclicity(classes);
         visibility = new VisibilityMetrics(classes);
+        cohesion = new LackOfCohesion(classes);
     }
 
     @Test
@@ -79,6 +82,11 @@ public class Arch2Metrics {
 	
     @Test
     public void testMemberVisibility() {
-    	assertEquals(66.666, visibility.calculateGlobalRelativeVisibilityOfClassMembers(), 0.01);
+    	assertEquals(60.0, visibility.calculateGlobalRelativeVisibilityOfClassMembers(), 0.01);
+    }
+    
+    @Test
+    public void testLCOM4() {
+    	System.out.println(cohesion.calculateAllLCOM4Values().toString());
     }
 }
