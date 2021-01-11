@@ -1,7 +1,7 @@
 package info.fivecdesign.metrics;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.tngtech.archunit.core.domain.Dependency;
 import com.tngtech.archunit.core.domain.JavaClass;
@@ -9,9 +9,7 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 
 /**
  * 
- * relative cyclicity of classes
- * 
- * TODO: package cyclicity
+ * Relative Cyclicity of Classes and Packages
  *
  */
 public class RelativeCyclicity {
@@ -22,13 +20,15 @@ public class RelativeCyclicity {
 		super();
 		this.classes = classes;
 	}
-
-	public double calculateRelativeCyclicity() {
+	
+	public double calculateRelativeCyclicityOfClasses() {
+		
+		List<Node> classNodes = buildClassGraph();
 		
 		double cyclic = 0;
 		
-		for (JavaClass clazz : classes) {
-			if (isClassPartOfACycle(clazz)) {
+		for (Node clazz : classNodes) {
+			if (clazz.isPartOfACycle()) {
 				cyclic++;
 			}
 		}
@@ -36,38 +36,76 @@ public class RelativeCyclicity {
 		return (cyclic / (double) classes.size()) * 100.0;
 	}
 	
-    private boolean isClassPartOfACycle(JavaClass clazz) {
-    	
-    	// we will try to reach ourself going down all subsequent dependencies
-    	// if we cannot, this class is not part of a cycle
-    	
-    	Set<String> notVisitAgainHaveBeenThere = new HashSet<String>();
-    	return findMyselfRecursive(clazz.getDirectDependenciesFromSelf(), notVisitAgainHaveBeenThere, clazz);
-    }
-    
-    private boolean findMyselfRecursive (Set<Dependency> dependencies, Set<String> notVisitAgainHaveBeenThere, JavaClass clazz2Find) {
-    	
-        for (Dependency classDependency : dependencies) {
-        	
-            JavaClass accessedClass = classDependency.getTargetClass();
-            
-            if (accessedClass.equals(clazz2Find)) {
-            	// cycle!
-            	return true;
-            }
-            
-        	if (!notVisitAgainHaveBeenThere.contains(accessedClass.getName())) {
-        		
-                notVisitAgainHaveBeenThere.add(accessedClass.getName());
-                boolean result = findMyselfRecursive(accessedClass.getDirectDependenciesFromSelf(), notVisitAgainHaveBeenThere, clazz2Find);
-                if (result) {
-                	// cycle was found in recursive call
-                	return true;
-                }
-        	}
-        }
+	public double calculateRelativeCyclicityOfPackages() {
+		
+		List<Node> pckgNodes = buildPackageGraph();
+		
+		double cyclic = 0;
+		
+		for (Node pckg : pckgNodes) {
+			if (pckg.isPartOfACycle()) {
+				cyclic++;
+			}
+		}
+		
+		return (cyclic / (double) pckgNodes.size()) * 100.0;
+	}
+	
+	private List<Node> buildClassGraph() {
+		
+		List<Node> nodes = new ArrayList<Node>();
+		
+		for (JavaClass clazz : classes) {
+			
+			Node node = Node.findNode(nodes, clazz.getName());
+			if (node == null) {
+				node = new Node(clazz.getName());
+				nodes.add(node);
+			}
+			
+	        for (Dependency classDependency : clazz.getDirectDependenciesFromSelf()) {
+	        	
+	            JavaClass accessedClazz = classDependency.getTargetClass();
+				Node accessedNode = Node.findNode(nodes, accessedClazz.getName());
+				if (accessedNode == null) {
+					accessedNode = new Node(accessedClazz.getName());
+					nodes.add(accessedNode);
+				}
+				
+	        	node.connectTo(accessedNode);
+	        }
+		}
+	
+		return nodes;
+	}
 
-        // no cycle found!
-        return false;
-    }
+	private List<Node> buildPackageGraph() {
+		
+		List<Node> nodes = new ArrayList<Node>();
+		
+		for (JavaClass clazz : classes) {
+			
+			Node node = Node.findNode(nodes, clazz.getPackageName());
+			if (node == null) {
+				node = new Node(clazz.getPackageName());
+				nodes.add(node);
+			}
+			
+	        for (Dependency classDependency : clazz.getDirectDependenciesFromSelf()) {
+	        	
+	            JavaClass accessedClazz = classDependency.getTargetClass();
+	            if (!clazz.getPackage().equals(accessedClazz.getPackage())) {
+					Node accessedNode = Node.findNode(nodes, accessedClazz.getPackageName());
+					if (accessedNode == null) {
+						accessedNode = new Node(accessedClazz.getPackageName());
+						nodes.add(accessedNode);
+					}
+		        	node.connectTo(accessedNode);
+	            }
+	        }
+		}
+	
+		return nodes;
+	}
+
 }

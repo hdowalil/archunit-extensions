@@ -68,8 +68,13 @@ public class Arch1Metrics {
     }
     
     @Test
-    public void testRelativeCyclicity() {
-    	assertEquals(40.0, cyclicity.calculateRelativeCyclicity(), 0.01);
+    public void testRelativeCyclicityOfClasses() {
+    	assertEquals(40.0, cyclicity.calculateRelativeCyclicityOfClasses(), 0.01);
+    }
+	
+    @Test
+    public void testRelativeCyclicityOfPackages() {
+    	assertEquals(0.0, cyclicity.calculateRelativeCyclicityOfPackages(), 0.01);
     }
 	
     @Test
