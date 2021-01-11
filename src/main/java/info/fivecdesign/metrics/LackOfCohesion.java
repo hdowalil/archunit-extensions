@@ -72,7 +72,9 @@ public class LackOfCohesion {
 			for (Dependency classDependency : clazz.getDirectDependenciesToSelf()) {
 
 				JavaClass accessingClass = classDependency.getOriginClass();
-				groups.connect(clazz, accessingClass);
+	            if (classes.contain(accessingClass.getName())) {
+	            	groups.connect(clazz, accessingClass);
+	            }
 			}
 		}
 		

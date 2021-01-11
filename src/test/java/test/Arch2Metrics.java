@@ -11,6 +11,7 @@ import org.junit.jupiter.api.TestInstance;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 
+import info.fivecdesign.metrics.ImportOptionExcludePackageInfo;
 import info.fivecdesign.metrics.JohnLakosMetrics;
 import info.fivecdesign.metrics.LackOfCohesion;
 import info.fivecdesign.metrics.RelativeCyclicity;
@@ -28,7 +29,7 @@ public class Arch2Metrics {
 
     @BeforeAll
     public void importClasses() {
-        classes = new ClassFileImporter().importPackages(PACKAGE_ROOT);
+        classes = new ClassFileImporter().withImportOption(new ImportOptionExcludePackageInfo()).importPackages(PACKAGE_ROOT);
         metrics = new JohnLakosMetrics(classes);
         cyclicity = new RelativeCyclicity(classes);
         visibility = new VisibilityMetrics(classes);

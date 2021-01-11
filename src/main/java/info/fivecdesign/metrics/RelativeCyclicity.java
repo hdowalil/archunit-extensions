@@ -66,13 +66,14 @@ public class RelativeCyclicity {
 	        for (Dependency classDependency : clazz.getDirectDependenciesFromSelf()) {
 	        	
 	            JavaClass accessedClazz = classDependency.getTargetClass();
-				Node accessedNode = Node.findNode(nodes, accessedClazz.getName());
-				if (accessedNode == null) {
-					accessedNode = new Node(accessedClazz.getName());
-					nodes.add(accessedNode);
-				}
-				
-	        	node.connectTo(accessedNode);
+	            if (classes.contain(accessedClazz.getName())) {
+					Node accessedNode = Node.findNode(nodes, accessedClazz.getName());
+					if (accessedNode == null) {
+						accessedNode = new Node(accessedClazz.getName());
+						nodes.add(accessedNode);
+					}
+		        	node.connectTo(accessedNode);
+	            }
 	        }
 		}
 	
@@ -94,7 +95,7 @@ public class RelativeCyclicity {
 	        for (Dependency classDependency : clazz.getDirectDependenciesFromSelf()) {
 	        	
 	            JavaClass accessedClazz = classDependency.getTargetClass();
-	            if (!clazz.getPackage().equals(accessedClazz.getPackage())) {
+	            if (classes.contain(accessedClazz.getName()) && !clazz.getPackage().equals(accessedClazz.getPackage())) {
 					Node accessedNode = Node.findNode(nodes, accessedClazz.getPackageName());
 					if (accessedNode == null) {
 						accessedNode = new Node(accessedClazz.getPackageName());

@@ -93,5 +93,11 @@ public class Node {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		String ct = connectedTo.stream().map(n -> n.getId()).reduce("", String::concat);
+		return "Node [id=" + id + ", connectedTo=" + ct + "]";
+	}
+
 	
 }
