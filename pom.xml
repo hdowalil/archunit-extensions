@@ -1,8 +1,8 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>info.5cdesign</groupId>
+  <groupId>info.fivecdesign</groupId>
   <artifactId>archunit-extensions</artifactId>
-  <version>2.0</version>
+  <version>0.1.0</version>
   <packaging>jar</packaging>
  
   <name>ArchUnit Extensions</name>
