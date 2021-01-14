@@ -33,7 +33,7 @@ public class Arch2Metrics {
         metrics = new JohnLakosMetrics(classes);
         cyclicity = new RelativeCyclicity(classes);
         visibility = new VisibilityMetrics(classes);
-        cohesion = new LackOfCohesion(classes);
+        cohesion = new LackOfCohesion();
     }
 
     @Test
@@ -95,7 +95,7 @@ public class Arch2Metrics {
     
     @Test
     public void testLCOM4() {
-    	Map<String, Integer> lcom4Values = cohesion.calculateAllLCOM4Values();
+    	Map<String, Integer> lcom4Values = cohesion.calculateAllLCOM4Values(classes);
     	assertEquals(1, lcom4Values.get("test.arch2.C1").intValue());
     	assertEquals(1, lcom4Values.get("test.arch2.C2").intValue());
     	assertEquals(1, lcom4Values.get("test.arch2.C3").intValue());
@@ -105,6 +105,6 @@ public class Arch2Metrics {
     
     @Test
     public void testLackOfCohesion() {
-    	assertEquals(1, cohesion.calculateLackOfCohesion());
+    	assertEquals(1, cohesion.calculateLackOfCohesion(classes));
     }
 }

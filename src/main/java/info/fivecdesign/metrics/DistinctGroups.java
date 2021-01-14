@@ -6,17 +6,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DistinctGroups {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+/*
+ * contains a list of object-sets
+ * objects in the same set are connected to each other
+ * every object must only appear in max. one set
+ */
+class DistinctGroups {
 	
 	// every object must be only once in any of the sets!
 	private List<Set<Object>> groups;
 
-	public DistinctGroups() {
+	DistinctGroups() {
 		super();
 		groups = new ArrayList<Set<Object>>();
 	}
 	
-	public void add(Object obj) {
+	void add(@Nonnull Object obj) {
 		
 		Set<Object> setOfObject = findObjectInSets(obj, groups);
 		
@@ -27,7 +35,7 @@ public class DistinctGroups {
 		}
 	}
 
-	public void connect(Object obj1, Object obj2) {
+	void connect(@Nonnull Object obj1, @Nonnull Object obj2) {
 		
 		Set<Object> setOfObject1 = findObjectInSets(obj1, groups);
 		Set<Object> setOfObject2 = findObjectInSets(obj2, groups);
@@ -54,11 +62,12 @@ public class DistinctGroups {
 		}
 	}
 	
-	public int numberOfDistinctGroups () {
+	int numberOfDistinctGroups () {
 		return groups.size();
 	}
 	
-	private Set<Object> findObjectInSets (Object obj2Find, Collection<Set<Object>> allSets) {
+	@Nullable
+	private Set<Object> findObjectInSets (@Nonnull Object obj2Find, @Nonnull Collection<Set<Object>> allSets) {
 		
 		for (Set<Object> singleSet : allSets) {
 			if (singleSet.contains(obj2Find)) {

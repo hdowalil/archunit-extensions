@@ -3,6 +3,9 @@ package info.fivecdesign.metrics;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+
 import com.tngtech.archunit.core.domain.Dependency;
 import com.tngtech.archunit.core.domain.JavaAccess;
 import com.tngtech.archunit.core.domain.JavaClass;
@@ -12,20 +15,18 @@ import com.tngtech.archunit.core.domain.JavaMember;
 
 /**
  *
- * Lack of Cohesion in given Classes, will return number of distinct subsets
- * plus lack of cohesion in whole set 
+ * Lack of Cohesion in given Classes, will return number of distinct subsets in given class.
+ * This actually calculates version 4 of LCOM.
+ * We also calcualte the same value using the same algorithm for all given classes 
  * 
  */
 public class LackOfCohesion {
 	
-    private JavaClasses classes = null;
-	
-	public LackOfCohesion(JavaClasses classes) {
-		super();
-		this.classes = classes;
-	}
-
-	public Map<String, Integer> calculateAllLCOM4Values () {
+    public LackOfCohesion() {
+    	super();
+    }
+    
+	public Map<String, Integer> calculateAllLCOM4Values (JavaClasses classes) {
 		
 		Map<String, Integer> allLCOM4Values = new HashMap<String, Integer>(); 
 		
@@ -36,7 +37,7 @@ public class LackOfCohesion {
 		return allLCOM4Values;
 	}
 	
-	public int calculateLCOM4(JavaClass clazz) {
+	public @Nonnegative int calculateLCOM4(@Nonnull JavaClass clazz) {
 		
 		DistinctGroups groups = new DistinctGroups();
 		
@@ -62,7 +63,11 @@ public class LackOfCohesion {
 		return groups.numberOfDistinctGroups();
 	}
 
-	public int calculateLackOfCohesion () {
+	public @Nonnegative int calculateLackOfCohesion (@Nonnull JavaClasses classes) {
+		
+		if (classes == null || classes.size() <= 0) {
+			throw new IllegalArgumentException("Can only be calculated for a set of classes");
+		}
 		
 		DistinctGroups groups = new DistinctGroups();
 		

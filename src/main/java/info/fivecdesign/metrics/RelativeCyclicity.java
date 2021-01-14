@@ -3,12 +3,14 @@ package info.fivecdesign.metrics;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+
 import com.tngtech.archunit.core.domain.Dependency;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
 
 /**
- * 
  * Relative Cyclicity of Classes and Packages
  *
  */
@@ -16,12 +18,12 @@ public class RelativeCyclicity {
 
     private JavaClasses classes = null;
 
-	public RelativeCyclicity(JavaClasses classes) {
+	public RelativeCyclicity(@Nonnull JavaClasses classes) {
 		super();
 		this.classes = classes;
 	}
 	
-	public double calculateRelativeCyclicityOfClasses() {
+	public @Nonnegative double calculateRelativeCyclicityOfClasses() {
 		
 		List<Node> classNodes = buildClassGraph();
 		
@@ -33,7 +35,11 @@ public class RelativeCyclicity {
 			}
 		}
 		
-		return (cyclic / (double) classes.size()) * 100.0;
+		double result = (cyclic / (double) classes.size()) * 100.0;
+		
+		assert (result >= 0.0 && result <= 100.0);
+		
+		return result;
 	}
 	
 	public double calculateRelativeCyclicityOfPackages() {
@@ -48,7 +54,11 @@ public class RelativeCyclicity {
 			}
 		}
 		
-		return (cyclic / (double) pckgNodes.size()) * 100.0;
+		double result = (cyclic / (double) pckgNodes.size()) * 100.0;
+		
+		assert (result >= 0.0 && result <= 100.0);
+		
+		return result;
 	}
 	
 	private List<Node> buildClassGraph() {

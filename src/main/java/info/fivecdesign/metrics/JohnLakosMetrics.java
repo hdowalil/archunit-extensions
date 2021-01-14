@@ -6,6 +6,15 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 
 import java.util.*;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+
+/**
+ * @author Herbert Dowalil
+ *
+ * @see <a href="https://www.goodreads.com/book/show/1370617.Large_Scale_C_Software_Design">Large scale C++ Software Design</a>
+ * 
+ */
 public class JohnLakosMetrics {
 
     private JavaClasses classes = null;
@@ -13,11 +22,11 @@ public class JohnLakosMetrics {
     private Map<String, Integer> dependsUpon = null;
     private Map<String, Integer> usedFrom = null;
 
-    public JohnLakosMetrics(JavaClasses classes) {
+    public JohnLakosMetrics(@Nonnull JavaClasses classes) {
         this.classes = classes;
     }
 
-    private int calculateSingleDependsUpon(JavaClass clazz, Set<String> alreadyVisited) {
+    private @Nonnegative int calculateSingleDependsUpon(@Nonnull JavaClass clazz, @Nonnull Set<String> alreadyVisited) {
 
         // depends-upon includes the class itself, therefore we start with the class itsfelf
         int count = 1;
@@ -35,6 +44,8 @@ public class JohnLakosMetrics {
                 }
             }
         }
+        
+        assert (count >= 1);
 
         return count;
     }
@@ -52,7 +63,7 @@ public class JohnLakosMetrics {
 
     }
 
-    private int calculateSingleUsedFrom(JavaClass clazz, Set<String> alreadyVisited) {
+    private @Nonnegative int calculateSingleUsedFrom(@Nonnull JavaClass clazz, @Nonnull Set<String> alreadyVisited) {
 
         // used-from includes the class itself, therefore we start with the class itsfelf
         int count = 1;
@@ -71,6 +82,8 @@ public class JohnLakosMetrics {
             }
         }
 
+        assert (count >= 1);
+
         return count;
     }
 
@@ -87,7 +100,7 @@ public class JohnLakosMetrics {
 
     }
 
-    public int getDependsUpon (String javaClassName) {
+    public @Nonnegative int getDependsUpon (@Nonnull String javaClassName) {
 
         if (dependsUpon == null) {
             calculateAllDependsUpon();
@@ -96,12 +109,16 @@ public class JohnLakosMetrics {
         return dependsUpon.getOrDefault(javaClassName, 0);
     }
 
-    public int getDependsUpon (JavaClass clazz) {
+    public @Nonnegative int getDependsUpon (@Nonnull JavaClass clazz) {
 
+    	if (!classes.contains(clazz)) {
+    		throw new IllegalArgumentException();
+    	}
+    	
         return getDependsUpon(clazz.getName());
     }
 
-    public int getUsedFrom (String javaClassName) {
+    public @Nonnegative int getUsedFrom (@Nonnull String javaClassName) {
 
         if (usedFrom == null) {
             calculateAllUsedFrom();
@@ -110,8 +127,12 @@ public class JohnLakosMetrics {
         return usedFrom.getOrDefault(javaClassName, 0);
     }
 
-    public int getUsedFrom (JavaClass clazz) {
+    public @Nonnegative int getUsedFrom (@Nonnull JavaClass clazz) {
 
+    	if (!classes.contains(clazz)) {
+    		throw new IllegalArgumentException();
+    	}
+    	
         return getUsedFrom(clazz.getName());
     }
 
@@ -135,7 +156,7 @@ public class JohnLakosMetrics {
                 .compareTo(e2.getValue())).getKey();
     }
 
-    public int getCumulativeComponentDependency() {
+    public @Nonnegative int getCumulativeComponentDependency() {
 
         if (dependsUpon == null) {
             calculateAllDependsUpon();
@@ -145,19 +166,19 @@ public class JohnLakosMetrics {
 
     }
 
-    public double getAverageComponentDependency() {
+    public @Nonnegative double getAverageComponentDependency() {
 
         return (double) getCumulativeComponentDependency() / (double) dependsUpon.size();
     }
 
-    public double getRelativeAverageComponentDependency() {
+    public @Nonnegative double getRelativeAverageComponentDependency() {
 
         double acd = getAverageComponentDependency();
 
         return (acd / (double) dependsUpon.size())*100d;
     }
 
-    public double getNormalizedCumulativeComponentDependency () {
+    public @Nonnegative double getNormalizedCumulativeComponentDependency () {
 
         double ccd = (double) getCumulativeComponentDependency();
         double ccd_BinaryTree = (double) getCCDForBalancedBinaryTreeWithNoOfComponents(dependsUpon.size());
@@ -172,9 +193,13 @@ public class JohnLakosMetrics {
      * used-from for level 1 is 1, for level 2 is 2 and so on
      * we add as many used-from values as here are components level per level
      */
-    private int getCCDForBalancedBinaryTreeWithNoOfComponents (int noOfComponents) {
+    private @Nonnegative int getCCDForBalancedBinaryTreeWithNoOfComponents (@Nonnegative int noOfComponents) {
 
-        int result = 0;
+    	if (noOfComponents <= 0) {
+    		throw new IllegalArgumentException();
+    	}
+        
+    	int result = 0;
 
         int componentsPerLevel = 1;
         int currentComponentOnLevel = 0;
@@ -196,6 +221,8 @@ public class JohnLakosMetrics {
             }
 
         }
+        
+        assert(result > 0);
 
         return result;
     }

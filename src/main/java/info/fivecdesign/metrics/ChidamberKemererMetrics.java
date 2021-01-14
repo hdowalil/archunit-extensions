@@ -4,16 +4,24 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
 
-public class ChidamberKimererMetrics {
+/**
+ * @author Herbert Dowalil
+ *
+ * @see <a href="https://www.researchgate.net/publication/260835125_Chidamber_and_Kemerer_Object-Oriented_Measures_Analysis_of_their_Design_from_the_Metrology_Perspective">Chidamber and Kemerer Object-Oriented Measures</a>
+ * 
+ */
+public class ChidamberKemererMetrics {
 
 	private JavaClasses classes;
 	Map<String, Integer> dit;
 	Map<String, Integer> noc;
 
-	public ChidamberKimererMetrics(JavaClasses classes) {
+	public ChidamberKemererMetrics(@Nonnull JavaClasses classes) {
 		super();
 		this.classes = classes;
 	}
@@ -39,11 +47,16 @@ public class ChidamberKimererMetrics {
 		
 	}
 	
-	public Integer getDepthOfInheritance(JavaClass clazz) {
+	public Integer getDepthOfInheritance(@Nonnull JavaClass clazz) {
+		
+		if (!classes.contains(clazz)) {
+			throw new IllegalArgumentException();
+		}
+		
 		return getDepthOfInheritance(clazz.getName());
 	}
 	
-	public Integer getDepthOfInheritance(String clazzName) {
+	public Integer getDepthOfInheritance(@Nonnull String clazzName) {
 		calculateAllDepthOfInheritance();
 		return dit.get(clazzName);
 	}
@@ -62,11 +75,16 @@ public class ChidamberKimererMetrics {
 		return noc;
 	}
 	
-	public Integer getNumberOfChildren(JavaClass clazz) {
+	public Integer getNumberOfChildren(@Nonnull JavaClass clazz) {
+		
+		if (!classes.contains(clazz)) {
+			throw new IllegalArgumentException();
+		}
+		
 		return getNumberOfChildren(clazz.getName());
 	}
 	
-	public Integer getNumberOfChildren(String clazzName) {
+	public Integer getNumberOfChildren(@Nonnull String clazzName) {
 		caclulateAllNumberOfChildren();
 		return noc.get(clazzName);
 	}

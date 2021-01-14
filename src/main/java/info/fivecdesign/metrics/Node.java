@@ -4,32 +4,38 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Node {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+/*
+ * a List of these Nodes represents a Graph
+ */
+class Node {
 	
 	private String id = null;
 	
 	private Set<Node> connectedTo = null;
 
-	public Node(String id) {
+	Node(@Nonnull String id) {
 		super();
 		this.id = id;
 		connectedTo = new HashSet<Node>();
 	}
 	
-	public static Node findNode(final Collection<Node> nodes, final String nodeId) {
+	static @Nullable Node findNode(@Nonnull final Collection<Node> nodes, @Nonnull final String nodeId) {
 		return nodes.stream().filter(x -> x.getId().equals(nodeId)).findFirst().orElse(null);
 	}
 	
-	public String getId() {
+	String getId() {
 		return id;
 	}
 
-	public int connectTo(Node otherNode) {
+	int connectTo(@Nonnull Node otherNode) {
 		connectedTo.add(otherNode);
 		return connectedTo.size();
 	}
 	
-    public boolean isPartOfACycle() {
+    boolean isPartOfACycle() {
     	
     	// we will try to reach ourself going down all subsequent dependencies
     	// if we cannot, this class is not part of a cycle
@@ -38,7 +44,8 @@ public class Node {
    		return findMyselfRecursive(connectedTo, notVisitAgainHaveBeenThere, this);
     }
     
-    private boolean findMyselfRecursive (Collection<Node> dependencies, Set<String> notVisitAgainHaveBeenThere, Node node2Find) {
+    private boolean findMyselfRecursive (@Nonnull Collection<Node> dependencies, 
+    		@Nonnull Set<String> notVisitAgainHaveBeenThere, @Nonnull Node node2Find) {
     	
         for (Node dependentNode : dependencies) {
         	
